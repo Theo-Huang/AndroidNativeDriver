@@ -35,7 +35,6 @@ I'm still looking for similar tool on windows.
   
 * Sample:
 
-    package android;
     import java.io.File;
     import java.util.List;
     import org.openqa.selenium.OutputType;
