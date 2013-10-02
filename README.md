@@ -102,3 +102,14 @@ AndroidNativeDriver By Theo
 ## Others
 
 * Group: https://groups.google.com/forum/?pli=1#!forum/nativedriver-users
+* Tested device:
+		
+		Motorola: XT910, MB525, Milestone2
+		Sony: Xperia Z Ultra, Xperia X10, Xperia SP
+		ASUS: Nexus7
+		HTC: Desire, One X+, Flyer
+		Samsung: 
+			Google Nexus: i9023, i9250
+			Galaxy: note N7000, Tab1, Tab2, Tab8.9
+		
+		
