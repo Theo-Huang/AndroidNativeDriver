@@ -34,8 +34,8 @@ I'm still looking for similar tool on windows.
   https://code.google.com/p/nativedriver/wiki/GettingStartedAndroid
   
 * Sample :
+
     package android;
-    
     import java.io.File;
     import java.util.List;
     import org.openqa.selenium.OutputType;
@@ -45,7 +45,6 @@ I'm still looking for similar tool on windows.
     import com.google.android.testing.nativedriver.client.AndroidNativeElement;
     import com.google.android.testing.nativedriver.client.ScreenShotTaker.RotateDegree;
     import com.google.android.testing.nativedriver.common.AndroidNativeBy;
-    
     public class Sample {
     	public static void main(String[] args) {
     		
