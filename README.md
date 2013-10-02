@@ -83,8 +83,8 @@ AndroidNativeDriver By Theo
 				screenshot.renameTo(targetPath);
 				
 			}
-		
-		}
+		}		
+
 
 
 ## Advance
