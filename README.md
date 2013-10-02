@@ -33,8 +33,9 @@ I'm still looking for similar tool on windows.
 * Start:
   https://code.google.com/p/nativedriver/wiki/GettingStartedAndroid
   
-* Sample:
-
+  ##Sample:
+    
+    package android;
     import java.io.File;
     import java.util.List;
     import org.openqa.selenium.OutputType;
