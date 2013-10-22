@@ -167,7 +167,7 @@ public abstract class AndroidNativeElement implements ElementSearchScope,
 	}
 
 	public void longClick() {
-
+	  // no-op
 	}
 
 	/**
