@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.google.android.testing.nativedriver.server;
 
@@ -28,45 +28,49 @@ import javax.annotation.Nullable;
  * The root element of Android NativeDriver. This element is the parent of all
  * top level nodes. The children includes pop-up windows, dialogs, menus,
  * toasts.
- *
- * <p>Since we use reflection to get top level nodes, this implementation might
- * not work in future version of Android SDK.
- *
+ * 
+ * <p>
+ * Since we use reflection to get top level nodes, this implementation might not work in future version of Android SDK.
+ * 
  * @author Tomohiro Kaizu
  * @author Theo Huang
  */
 public class RootSearchScope implements ElementSearchScope {
-  private static final String REFLECTION_ERROR_MESSAGE
-      = "Android NativeDriver only supports Android 4.3 (kit kat)."
+  private static final String REFLECTION_ERROR_MESSAGE = "Android NativeDriver only supports Android 4.3 (kit kat)."
           + " Check your environment.";
 
   private final ElementContext context;
   private String windowManagerString;
   private AndroidNativeDriver driver;
 
-  public RootSearchScope(AndroidNativeDriver driver ,ElementContext context) {
+  public RootSearchScope(AndroidNativeDriver driver, ElementContext context) {
     this.context = context;
     this.driver = driver;
     setWindowManagerString();
   }
 
   protected Class<?> getWindowManagerImplClass() throws ClassNotFoundException {
-	  if (android.os.Build.VERSION.SDK_INT >= 17) {
-			return Class.forName("android.view.WindowManagerGlobal");
-		} else {
-			return Class.forName("android.view.WindowManagerImpl");
-		}  
+    if (android.os.Build.VERSION.SDK_INT >= 17) {
+      return Class.forName("android.view.WindowManagerGlobal");
+    } else {
+      return Class.forName("android.view.WindowManagerImpl");
+    }
   }
 
+  @SuppressWarnings("unchecked")
   protected View[] getTopLevelViews() {
     try {
       Class<?> wmClass = getWindowManagerImplClass();
-      Field instanceField = wmClass.getDeclaredField(windowManagerString); 
+      Field instanceField = wmClass.getDeclaredField(windowManagerString);
       Field views = wmClass.getDeclaredField("mViews");
       views.setAccessible(true);
       instanceField.setAccessible(true);
       Object instance = instanceField.get(null);
-		return (View[]) views.get(instance);
+      if (android.os.Build.VERSION.SDK_INT < 19) {
+        return (View[]) views.get(instance);
+      } else {
+        return ((List<View>) views.get(instance)).toArray(new View[0]);
+      }
     } catch (ClassNotFoundException exception) {
       throw new WebDriverException(REFLECTION_ERROR_MESSAGE, exception);
     } catch (NoSuchFieldException exception) {
@@ -79,24 +83,23 @@ public class RootSearchScope implements ElementSearchScope {
       throw new WebDriverException(REFLECTION_ERROR_MESSAGE, exception);
     }
   }
-  
-  private void setWindowManagerString(){
-		if (android.os.Build.VERSION.SDK_INT >= 17) {
-			windowManagerString = "sDefaultWindowManager";
-		} else if(android.os.Build.VERSION.SDK_INT >= 13) {
-			windowManagerString = "sWindowManager";
-		} else {
-			windowManagerString = "mWindowManager";
-		}
+
+  private void setWindowManagerString() {
+    if (android.os.Build.VERSION.SDK_INT >= 17) {
+      windowManagerString = "sDefaultWindowManager";
+    } else if (android.os.Build.VERSION.SDK_INT >= 13) {
+      windowManagerString = "sWindowManager";
+    } else {
+      windowManagerString = "mWindowManager";
+    }
   }
 
   @Override
   public Iterable<AndroidNativeElement> getChildren() {
     View[] views = getTopLevelViews();
-    List<AndroidNativeElement> children
-        = Lists.newArrayListWithCapacity(views.length);
+    List<AndroidNativeElement> children = Lists.newArrayListWithCapacity(views.length);
     for (View view : views) {
-      children.add(context.newViewElement(driver,view));
+      children.add(context.newViewElement(driver, view));
     }
     return children;
   }
@@ -105,15 +108,14 @@ public class RootSearchScope implements ElementSearchScope {
   @Override
   public AndroidNativeElement findElementByAndroidId(int id) {
     for (View view : getTopLevelViews()) {
-      AndroidNativeElement found
-          = context.newViewElement(driver,view).findElementByAndroidId(id);
+      AndroidNativeElement found = context.newViewElement(driver, view).findElementByAndroidId(id);
       if (found != null) {
         return found;
       }
     }
     return null;
   }
-  
+
   public AndroidNativeElement getCurrentActivityElement() {
     Iterable<? extends AndroidNativeElement> iterable = getChildren();
     AndroidNativeElement activity = null;
