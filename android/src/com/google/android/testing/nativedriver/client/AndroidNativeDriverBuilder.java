@@ -36,65 +36,76 @@ import javax.annotation.Nullable;
  * @author Theo Huang
  */
 public class AndroidNativeDriverBuilder {
-	private static final int DEFAULT_SERVER_PORT = 54129;
+  private static final int DEFAULT_SERVER_PORT = 54129;
 
-	/**
-	 * The URL used to connect to the server when using a constructor that does not take a
-	 * {@code remoteAddress} or {@code executor} argument.
-	 */
-	private static final String DEFAULT_SERVER_URL = "http://localhost:" + DEFAULT_SERVER_PORT + "/hub";
+  /**
+   * The URL used to connect to the server when using a constructor that does not take a {@code remoteAddress} or {@code executor} argument.
+   */
+  private static final String DEFAULT_SERVER_URL = "http://localhost:" + DEFAULT_SERVER_PORT + "/hub";
 
-	private static URL defaultServerUrl() {
-		try {
-			return new URL(DEFAULT_SERVER_URL);
-		} catch (MalformedURLException exception) {
-			throw Throwables.propagate(exception);
-		}
-	}
+  private static URL defaultServerUrl() {
+    try {
+      return new URL(DEFAULT_SERVER_URL);
+    } catch (MalformedURLException exception) {
+      throw Throwables.propagate(exception);
+    }
+  }
 
-	@Nullable
-	private CommandExecutor commandExecutor;
-	@Nullable
-	private AdbConnection adbConnection;
-	private String deviceID;
+  private static URL defaultServerUrl(int port) {
+    try {
+      return new URL(DEFAULT_SERVER_URL.replaceAll(String.valueOf(DEFAULT_SERVER_PORT), String.valueOf(port)));
+    } catch (MalformedURLException exception) {
+      throw Throwables.propagate(exception);
+    }
+  }
 
-	public AndroidNativeDriverBuilder withAdbConnection(
-			@Nullable AdbConnection adbConnection, @Nullable String deviceID) {
-		this.adbConnection = adbConnection;
-		this.deviceID = deviceID;
-		return this;
-	}
+  @Nullable
+  private CommandExecutor commandExecutor;
+  @Nullable
+  private AdbConnection adbConnection;
+  private String deviceID;
 
-	public AndroidNativeDriverBuilder withDefaultServer() {
-		return withServer(defaultServerUrl());
-	}
+  public AndroidNativeDriverBuilder withAdbConnection(
+      @Nullable AdbConnection adbConnection, @Nullable String deviceID) {
+    this.adbConnection = adbConnection;
+    this.deviceID = deviceID;
+    return this;
+  }
 
-	public AndroidNativeDriverBuilder withServer(URL url) {
-		this.commandExecutor = new HttpCommandExecutor(Preconditions.checkNotNull(url));
-		return this;
-	}
+  public AndroidNativeDriverBuilder withDefaultServer(int port) {
+    return withServer(defaultServerUrl(port));
+  }
 
-	public AndroidNativeDriverBuilder
-			withCommandExecutor(CommandExecutor commandExecutor) {
-		this.commandExecutor = Preconditions.checkNotNull(commandExecutor);
-		return this;
-	}
+  public AndroidNativeDriverBuilder withDefaultServer() {
+    return withServer(defaultServerUrl());
+  }
 
-	public AndroidNativeDriver build() {
-		try {
-			return new AndroidNativeDriver(
-					Preconditions.checkNotNull(commandExecutor), adbConnection, deviceID);
-		} catch (RuntimeException e) {
-			this.sleep(2000);
-		}
-		return new AndroidNativeDriver(Preconditions.checkNotNull(commandExecutor), adbConnection, deviceID);
-	}
+  public AndroidNativeDriverBuilder withServer(URL url) {
+    this.commandExecutor = new HttpCommandExecutor(Preconditions.checkNotNull(url));
+    return this;
+  }
 
-	private void sleep(int millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+  public AndroidNativeDriverBuilder
+      withCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = Preconditions.checkNotNull(commandExecutor);
+    return this;
+  }
+
+  public AndroidNativeDriver build() {
+    try {
+      return new AndroidNativeDriver(
+          Preconditions.checkNotNull(commandExecutor), adbConnection, deviceID);
+    } catch (RuntimeException e) {
+      this.sleep(2000);
+    }
+    return new AndroidNativeDriver(Preconditions.checkNotNull(commandExecutor), adbConnection, deviceID);
+  }
+
+  private void sleep(int millis) {
+    try {
+      Thread.sleep(millis);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
 }

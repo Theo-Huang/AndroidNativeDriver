@@ -49,68 +49,64 @@ import javax.servlet.ServletException;
  */
 @SuppressWarnings("serial")
 public class AndroidNativeDriverServlet extends DriverServlet {
-	protected static final String SESSION_PATH = "/session/:sessionId/";
+  protected static final String SESSION_PATH = "/session/:sessionId/";
 
-	/**
-	 * Registers the AND WebDriver implementation with the Jetty server so AND will start when the
-	 * corresponding Capabilities are requested. Then it calls the base class' implementation.
-	 */
+  /**
+   * Registers the AND WebDriver implementation with the Jetty server so AND will start when the
+   * corresponding Capabilities are requested. Then it calls the base class' implementation.
+   */
 
-	// TODO Try to find better way to add mapping command
-	// Theo Huang
-	@SuppressWarnings("deprecation")
-	@Override
-	public void init() throws ServletException {
-		AndroidNativeDriverSessions driverSessions = new AndroidNativeDriverSessions();
-		driverSessions.registerDriver(AndroidCapabilities.get(), AndroidNativeDriver.class);
-		getServletContext().setAttribute(SESSIONS_KEY, driverSessions);
-		super.init();
-		try {
-			addNewPostMapping(
-					SESSION_PATH + "element", AndroidNativeFindElement.class)
-					.on(ResultType.SUCCESS, newJsonResult());
-			addNewPostMapping(
-					SESSION_PATH + "elements", AndroidNativeFindElements.class)
-					.on(ResultType.SUCCESS, newJsonResult());
-			addNewPostMapping(SESSION_PATH + "element/:id/element",
-					AndroidNativeFindChildElement.class)
-					.on(ResultType.SUCCESS, newJsonResult());
-			addNewPostMapping(SESSION_PATH + "element/:id/elements",
-					AndroidNativeFindChildElements.class)
-					.on(ResultType.SUCCESS, newJsonResult());
-			addNewPostMapping(SESSION_PATH + "element/:id/value",
-					AndroidNativeSendKeys.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "element/:id/drag",
-					Drag.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "click", Click.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "doubleclick", DoubleTap.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "buttondown", TouchDown.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "moveto", TouchMove.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "buttonup", TouchUp.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "touch/scroll", Scroll.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "touch/longclick", LongClick.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
-			addNewPostMapping(SESSION_PATH + "touch/doubleclick", DoubleClick.class)
-					.on(ResultType.SUCCESS, newEmptyResult());
+  // TODO Try to find better way to add mapping command
+  // Theo Huang
+  @SuppressWarnings("deprecation")
+  @Override
+  public void init() throws ServletException {
+    AndroidNativeDriverSessions driverSessions = new AndroidNativeDriverSessions();
+    driverSessions.registerDriver(AndroidCapabilities.get(), AndroidNativeDriver.class);
+    getServletContext().setAttribute(SESSIONS_KEY, driverSessions);
+    super.init();
+    try {
+      addNewPostMapping(
+          SESSION_PATH + "element", AndroidNativeFindElement.class)
+          .on(ResultType.SUCCESS, newJsonResult());
+      addNewPostMapping(
+          SESSION_PATH + "elements", AndroidNativeFindElements.class)
+          .on(ResultType.SUCCESS, newJsonResult());
+      addNewPostMapping(SESSION_PATH + "element/:id/element", AndroidNativeFindChildElement.class)
+          .on(ResultType.SUCCESS, newJsonResult());
+      addNewPostMapping(SESSION_PATH + "element/:id/elements", AndroidNativeFindChildElements.class)
+          .on(ResultType.SUCCESS, newJsonResult());
+      addNewPostMapping(SESSION_PATH + "element/:id/value", AndroidNativeSendKeys.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "element/:id/drag", Drag.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "click", Click.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "doubleclick", DoubleTap.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "buttondown", TouchDown.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "moveto", TouchMove.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "buttonup", TouchUp.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "touch/scroll", Scroll.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "touch/longclick", LongClick.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
+      addNewPostMapping(SESSION_PATH + "touch/doubleclick", DoubleClick.class)
+          .on(ResultType.SUCCESS, newEmptyResult());
 
-		} catch (Exception exception) {
-			throw new ServletException(exception);
-		}
-	}
+    } catch (Exception exception) {
+      throw new ServletException(exception);
+    }
+  }
 
-	protected JsonResult newJsonResult() {
-		return new JsonResult(":response");
-	}
+  protected JsonResult newJsonResult() {
+    return new JsonResult(":response");
+  }
 
-	protected EmptyResult newEmptyResult() {
-		return new EmptyResult();
-	}
+  protected EmptyResult newEmptyResult() {
+    return new EmptyResult();
+  }
 }
