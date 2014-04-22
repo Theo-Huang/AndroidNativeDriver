@@ -93,7 +93,7 @@ limitations under the License.
       <zipfileset src="${build.dir}/common.jar"
 		  excludesfile="${server.resourcestoexclude}" />
 	  <zipfileset src="${third_party.guava}"
-		  excludesfile="${client.resourcestoexclude}" />
+		  excludesfile="${server.resourcestoexclude}" />
       <zipfileset src="${third_party.selenium.server}">
 		<exclude name="${exclude_from_selenium}" />
 		<exclude name="${exclude_from_selenium_maven}" />
